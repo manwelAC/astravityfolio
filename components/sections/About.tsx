@@ -13,9 +13,6 @@ import {
   Terminal,
   Database,
   FolderGit2,
-  CheckCircle2,
-  Building2,
-  Calendar,
   ExternalLink,
 } from 'lucide-react';
 import { profile, journey } from '@/data/profile';

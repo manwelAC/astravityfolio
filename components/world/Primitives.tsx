@@ -1,6 +1,7 @@
 'use client';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { pixelLettering } from '@/three/pixelLettering';
 export type Block = {
     p: [
         number,
@@ -51,14 +52,29 @@ export function Sign({ text, subtitle = '', width = 6, height = 1.9, position, o
     onClick?: () => void;
 }) {
     const [hovered, setHovered] = useState(false);
-    const texture = useMemo(() => { const c = document.createElement('canvas'); c.width = 512; c.height = 160; const x = c.getContext('2d')!; x.fillStyle = '#201e29'; x.fillRect(0, 0, 512, 160); x.strokeStyle = '#796047'; x.lineWidth = 5; x.strokeRect(7, 7, 498, 146); x.textAlign = 'center'; x.fillStyle = '#ffcc80'; x.font = `900 ${text.length > 13 ? 30 : 58}px monospace`; let fontSize = text.length > 13 ? 30 : 58; while (x.measureText(text).width > 466 && fontSize > 12) {
-        fontSize--;
-        x.font = '900 ' + fontSize + 'px monospace';
-    } x.fillText(text, 256, subtitle ? 82 : 100); if (subtitle) {
-        x.fillStyle = '#c8b5a0';
-        x.font = 'bold 19px monospace';
-        x.fillText(subtitle, 256, 123);
-    } const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.colorSpace = THREE.SRGBColorSpace; return t; }, [text, subtitle]);
+    const texture = useMemo(() => {
+        const c = document.createElement('canvas');
+        c.width = Math.round(width * 64); c.height = Math.round(height * 64);
+        const x = c.getContext('2d')!;
+        x.imageSmoothingEnabled = false;
+        x.fillStyle = '#211c22'; x.fillRect(0, 0, c.width, c.height);
+        x.strokeStyle = '#977353'; x.lineWidth = 2; x.strokeRect(5, 5, c.width - 10, c.height - 10);
+        x.fillStyle = '#ffe3a4'; x.shadowColor = '#ff8a28'; x.shadowBlur = 8;
+        if (/^[A-Z ]+$/.test(text)) {
+            pixelLettering(x, text, c.width, Math.round(c.height * .16), c.height * (subtitle ? .52 : .65));
+        } else {
+            x.textAlign = 'center'; x.textBaseline = 'middle';
+            x.font = `bold ${Math.min(c.height * .34, c.width / (text.length * .63))}px monospace`;
+            x.fillText(text, c.width / 2, c.height * .48);
+        }
+        if (subtitle) {
+            x.shadowBlur = 0; x.fillStyle = '#eee0ce'; x.textAlign = 'center';
+            x.font = `bold ${Math.floor(Math.min(c.height * .17, (c.width - 30) / (subtitle.length * .62)))}px monospace`;
+            x.fillText(subtitle, c.width / 2, c.height * .84);
+        }
+        const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearMipmapLinearFilter;
+        t.colorSpace = THREE.SRGBColorSpace; return t;
+    }, [text, subtitle, width, height]);
     useLayoutEffect(() => () => texture.dispose(), [texture]);
     return <group position={position} scale={hovered ? 1.025 : 1}><mesh position={[0, 0, -0.16]} castShadow><boxGeometry args={[width + .14, height + .14, .22]}/><meshStandardMaterial color="#251f27"/></mesh><mesh onClick={e => { e.stopPropagation(); onClick?.(); }} onPointerOver={e => { if (onClick) {
         e.stopPropagation();

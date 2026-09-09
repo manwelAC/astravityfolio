@@ -245,6 +245,7 @@ export default function SocialBillboardScreen({
       </mesh>
       {/* Screen with authentic logo and details */}
       <mesh
+        position={[0, 0, .035]}
         onClick={e => {
           e.stopPropagation();
           onClick?.();

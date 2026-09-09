@@ -5,7 +5,7 @@ import { PerformanceMonitor } from '@react-three/drei';
 import * as THREE from 'three';
 import { Blocks, GlowBlocks, Sign } from './Primitives';
 import { generateWorld } from '@/three/generateWorld';
-import { rooftops } from '@/three/cameraPositions';
+import { roofDimensions, rooftops } from '@/three/cameraPositions';
 import { projects } from '@/data/projects';
 import { socials } from '@/data/socials';
 import { Section, usePortfolio } from '@/stores/portfolio-store';
@@ -45,31 +45,30 @@ function World() {
     const visit = (section: Section) => { if (!usePortfolio.getState().transitioning)
         usePortfolio.getState().navigate(section); };
     useEffect(() => () => { document.body.style.cursor = 'auto'; }, []);
-    return <><fog attach="fog" args={['#886d92', 32, 100]}/><ambientLight intensity={.65} color="#aaa7d9"/><hemisphereLight args={['#e3b4c4', '#4b3a56', 1.6]}/><directionalLight position={[4, 18, 8]} color="#ffbd83" intensity={3.2} castShadow={quality === 'high'} shadow-mapSize={[1024, 1024]} shadow-camera-left={-18} shadow-camera-right={18} shadow-camera-top={18} shadow-camera-bottom={-18} shadow-camera-far={65} shadow-bias={-.001}/><pointLight position={[-5, 5, 0]} color="#ffa85c" intensity={9} distance={9}/><pointLight position={[5, 4, 0]} color="#ffa85c" intensity={7} distance={8}/><Blocks blocks={blocks}/><PixelCloudBank/><GlowBlocks blocks={lights}/><Beacon />
- {Object.entries(rooftops).map(([id, p]) => <group key={id} position={[...p]}><Sign text={id.toUpperCase()} subtitle={{ projects: 'IDEAS INTO THINGS', about: 'SAME HUMAN. MORE IDEAS.', leads: 'GOT A PROJECT? LET’S TALK.', socials: 'FIND ME AROUND' }[id]} width={id === 'projects' && !(compact && active === id) ? 7.9 : 6.2} position={[0, compact && active === id ? 5.45 : 4, -1.88]} onClick={active === 'overview' ? () => visit(id as Section) : undefined}/><mesh position={[0, -.15, 0]} onClick={e => { e.stopPropagation(); if (active === 'overview') visit(id as Section); }}><boxGeometry args={[id === 'projects' ? 8.7 : 6.8, .3, 5.4]}/><meshStandardMaterial color="#a2846a"/></mesh></group>)}
- {active === 'overview' && projects.slice(0, 3).map((p, i) => <ProjectScreen key={p.id} url={p.cover} id={p.id} position={[-8.05 + i * 2.65, 4.85, -4.58]}/>)}
- <Sign text="INDIE BLOCK" width={1.55} height={.8} position={[-9.1, 8, -4.32]}/>
- <Sign text="BUILD / EXPLORE / REPEAT" width={3.2} height={.72} position={[-5.4, 1.5, .35]}/>
- {active === 'overview' && <Sign text="PROFILE   /   STACK   /   JOURNEY" width={5.5} height={1.35} position={[5.2, 4, -5.1]} onClick={() => visit('about')}/>}
- {active === 'overview' && <Sign text="SEND A LITTLE HELLO →" width={4.8} height={1.35} position={[5.5, 1.05, 2.4]} onClick={() => visit('leads')}/>}
- {active === 'overview' && socials.map((s, i) => (
+    return <><fog attach="fog" args={['#765477', 38, 112]}/><ambientLight intensity={.72} color="#9da0d8"/><hemisphereLight args={['#ffb29a', '#332d4e', 1.9]}/><directionalLight position={[4, 18, 8]} color="#ffc078" intensity={4.1} castShadow={quality === 'high'} shadow-mapSize={[1024, 1024]} shadow-camera-left={-18} shadow-camera-right={18} shadow-camera-top={18} shadow-camera-bottom={-18} shadow-camera-far={65} shadow-bias={-.001}/><pointLight position={[-5, 5, 0]} color="#ff9b45" intensity={12} distance={11}/><pointLight position={[5, 4, 0]} color="#ff9b45" intensity={10} distance={10}/><Blocks blocks={blocks}/><PixelCloudBank/><GlowBlocks blocks={lights}/><Beacon />
+ {Object.entries(rooftops).map(([id, p]) => { const dimensions = roofDimensions[id as keyof typeof roofDimensions]; return <group key={id} position={[...p]}><Sign text={id.toUpperCase()} subtitle={{ projects: 'IDEAS INTO THINGS', about: 'SAME HUMAN. MORE IDEAS.', leads: 'GOT A PROJECT? LET’S TALK.', socials: 'FIND ME AROUND' }[id]} width={active === id && compact ? 5.6 : dimensions.width - 1.25} height={active === id ? (compact ? 1.15 : 1.45) : 2.15} position={[0, active === id ? (compact ? 8.8 : 6.35) : 4.35, -dimensions.depth / 2 + .58]} onClick={active === 'overview' ? () => visit(id as Section) : undefined}/><mesh position={[0, -.15, 0]} onClick={e => { e.stopPropagation(); if (active === 'overview') visit(id as Section); }}><boxGeometry args={[dimensions.width, .3, dimensions.depth]}/><meshStandardMaterial color="#a2846a"/></mesh></group>; })}
+ {active === 'overview' && <group position={[...rooftops.projects]}>{projects.slice(0, 3).map((p, i) => <group key={p.id} position={[-3.5 + i * 3.5, 0, 0]}><ProjectScreen url={p.cover} id={p.id} position={[0, 2.05, -3.25]}/><Sign text={p.title.toUpperCase()} width={3.05} height={.48} position={[0, 1, -3.2]} onClick={() => visit('projects')}/></group>)}</group>}
+ <Sign text="INDIE BLOCK" width={2.1} height={1.05} position={[0, 8.25, -4.32]}/>
+ {active === 'overview' && <group position={[...rooftops.about]}>
+   <Sign text="JOHN MANUEL" subtitle="FULL-STACK DEVELOPER" width={5.2} height={1.4} position={[-2.45, 2.05, -3.2]} onClick={() => visit('about')}/>
+   <Sign text="PROFILE / STACK" width={4.2} height={.85} position={[2.65, 2.55, -3.2]} onClick={() => visit('about')}/>
+   <Sign text="EDUCATION / JOURNEY" width={4.2} height={.85} position={[2.65, 1.45, -3.2]} onClick={() => visit('about')}/>
+ </group>}
+ {active === 'overview' && <group position={[...rooftops.leads]}><Sign text="LET'S TALK" subtitle="PROJECTS / COLLABORATIONS / SAY HI" width={8.8} height={2.25} position={[0, 1.95, -3]} onClick={() => visit('leads')}/></group>}
+ {active === 'overview' && <group position={[...rooftops.socials]}>{socials.map((s, i) => (
    <SocialBillboardScreen
      key={s.name}
      social={s}
-     width={compact ? 5.9 : 1.82}
-     height={compact ? 1.08 : 2.05}
-     position={[
-       compact ? -5 : -7.08 + i * 2.08,
-       compact ? 3.05 - i * 1.25 : 1.65,
-       3.25
-     ]}
+     width={2.6}
+     height={2.5}
+     position={[-3.1 + i * 3.1, 1.95, -3]}
      onClick={() => visit('socials')}
    />
- ))}
- {active === 'overview' && <mesh position={[-5, .35, 3.2]}><boxGeometry args={[5.9, .05, .05]} /><meshStandardMaterial color="#353a36" /></mesh>}
+ ))}</group>}
  <mesh position={[-6.4, 1.3, 4.7]} rotation={[-.65, 0, -.4]}><cylinderGeometry args={[.8, .25, .25, 8]}/><meshStandardMaterial color="#a99daf" side={THREE.DoubleSide}/></mesh>
  <mesh position={[25, 8, -48]}><circleGeometry args={[4.3, 12]}/><meshBasicMaterial color="#ffd592" fog={false}/></mesh>
   {active !== 'overview' && <group key={active} position={[...rooftops[active]]}>
+   {[-1, 1].map(side => <mesh key={side} position={[side * (roofDimensions[active].width / 2 - 1.5), 4.15, -roofDimensions[active].depth / 2 + .35]}><boxGeometry args={[.18, compact ? 3.7 : 2.7, .22]}/><meshStandardMaterial color="#42343a"/></mesh>)}
    <pointLight position={[0, 3, 1]} color="#ffd397" intensity={8} distance={9}/>
    {active === 'projects' && <ProjectsRooftop />}
    {active === 'about' && <AboutRooftop />}
@@ -83,7 +82,7 @@ export default function PortfolioCanvas({ onReady, onFailure }: {
     onFailure: () => void;
 }) {
     const quality = usePortfolio(s => s.quality);
-    return <Canvas shadows={quality === 'high'} camera={{ position: [19, 18, 30], fov: 43, near: .1, far: 160 }} dpr={quality === 'low' ? 1 : [1, 1.5]} gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }} onCreated={onReady} fallback={<div className="world-fallback">Explore the block using the navigation below.</div>}><Suspense fallback={null}><ContextMonitor onFailure={onFailure}/><World /></Suspense></Canvas>;
+    return <Canvas shadows={quality === 'high'} camera={{ position: [25, 24, 42], fov: 46, near: .1, far: 180 }} dpr={quality === 'low' ? 1 : [1, 1.5]} gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }} onCreated={onReady} fallback={<div className="world-fallback">Explore the block using the navigation below.</div>}><Suspense fallback={null}><ContextMonitor onFailure={onFailure}/><World /></Suspense></Canvas>;
 }
 
 function ContextMonitor({ onFailure }: { onFailure: () => void }) {

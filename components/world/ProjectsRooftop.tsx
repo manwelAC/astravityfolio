@@ -15,11 +15,11 @@ function CarouselPanel({ index, offset, onSelect }: { index: number; offset: num
   useEffect(() => {
     if (!group.current) return;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const tween = gsap.to(group.current.position, { x: offset * 2.8, z: offset === 0 ? .2 : 0, duration: reduced ? 0 : .42, ease: 'power2.inOut' });
+    const tween = gsap.to(group.current.position, { x: offset * 4, z: -2.45 + (offset === 0 ? .2 : 0), duration: reduced ? 0 : .42, ease: 'power2.inOut' });
     return () => { tween.kill(); };
   }, [offset]);
-  return <group ref={group} position={[offset * 2.8 + .35, compact ? 2.15 : 1.85, -1.8]}>
-    <WorldDisplay width={compact ? 5.6 : offset === 0 ? 3.25 : 2.05} height={compact ? 3.3 : offset === 0 ? 2.05 : 1.65} pixels={500} position={[0, 0, 0]} label={project.title} tone="gallery">
+  return <group ref={group} position={[offset * 4, compact ? 4 : 2.8, -2.45]}>
+    <WorldDisplay width={compact ? 5.4 : offset === 0 ? 4.5 : 3.15} height={compact ? 5.9 : offset === 0 ? 2.85 : 2.3} pixels={compact ? 360 : 430} position={[0, 0, 0]} label={project.title} tone="gallery">
       <button className="billboard-project" onClick={onSelect} aria-label={`Select ${project.title}`}>
         <SafeImage src={project.cover} alt={`${project.title} preview`} />
         <span><b>{project.title}</b><small>{offset === 0 ? 'SELECT PROJECT ↗' : 'VIEW PROJECT ↗'}</small></span>
@@ -38,10 +38,10 @@ export default function ProjectsRooftop() {
   const move = (direction: number) => { setIndex(i => (i + direction + projects.length) % projects.length); setImage(0); };
   const select = (i: number) => { setIndex(i); setImage(0); usePortfolio.getState().selectProject(projects[i].id); };
   if (selected) return <>
-    <WorldDisplay position={[0, compact ? 2.1 : 1.7, -1.7]} width={compact ? 5.8 : 7.75} height={compact ? 4 : 2.75} pixels={compact ? 580 : 1040} label={`${project.title} project display`} tone="gallery" animateKey={project.id}>
+    <WorldDisplay position={[0, compact ? 4 : 2.8, -2.35]} width={compact ? 5.4 : 11.8} height={compact ? 6.2 : 4.15} pixels={compact ? 360 : 850} label={`${project.title} project display`} tone="gallery" animateKey={project.id}>
       <div className="project-wall-detail">
         <div className="project-wall-image">
-          <a href={project.gallery[image] || project.cover} target="_blank" rel="noopener noreferrer" aria-label="Open full-size screenshot"><SafeImage key={project.gallery[image]} src={project.gallery[image] || project.cover} alt={`${project.title} screenshot ${image + 1}`} /></a>
+          <a href={project.gallery[image] || project.cover} target="_blank" rel="noopener noreferrer" aria-label="Open full-size screenshot"><SafeImage key={project.gallery[image]} src={project.gallery[image] || project.cover} alt={`${project.title} screenshot ${image + 1}`} /><span className="image-inspect-label">Inspect full-size ↗</span></a>
           <div className="wall-controls"><button aria-label="Previous screenshot" onClick={() => setImage(i => (i - 1 + project.gallery.length) % project.gallery.length)}>←</button><span>{image + 1} / {project.gallery.length}</span><button aria-label="Next screenshot" onClick={() => setImage(i => (i + 1) % project.gallery.length)}>→</button></div>
         </div>
         <div className="project-wall-copy">
@@ -63,7 +63,7 @@ export default function ProjectsRooftop() {
       const i = (index + offset + projects.length) % projects.length;
       return <CarouselPanel key={projects[i].id} index={i} offset={offset} onSelect={() => select(i)} />;
     })}
-    <mesh position={[-2.6, .4, 1.35]}><boxGeometry args={[.13, .8, .13]}/><meshStandardMaterial color="#574333"/></mesh><mesh position={[2.6, .4, 1.35]}><boxGeometry args={[.13, .8, .13]}/><meshStandardMaterial color="#574333"/></mesh><WorldDisplay position={[0, .85, 1.35]} width={compact ? 3.9 : 7.7} height={.48} pixels={compact ? 500 : 1000} label="Project carousel controls" tone="gallery">
+    <mesh position={[-5.1, .4, 1.65]}><boxGeometry args={[.13, .8, .13]}/><meshStandardMaterial color="#574333"/></mesh><mesh position={[5.1, .4, 1.65]}><boxGeometry args={[.13, .8, .13]}/><meshStandardMaterial color="#574333"/></mesh><WorldDisplay position={[0, .45, -1.6]} width={compact ? 5.4 : 11.2} height={compact ? .85 : .65} pixels={compact ? 360 : 850} label="Project carousel controls" tone="gallery">
       <div className="wall-controls"><button onClick={() => move(-1)} aria-label="Previous project">← Previous</button><span>{String(index + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')} <b>{project.title}</b></span><button onClick={() => select(index)}>Select ↗</button><button onClick={() => move(1)} aria-label="Next project">Next →</button></div>
     </WorldDisplay>
   </>;

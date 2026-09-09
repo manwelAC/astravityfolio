@@ -1,27 +1,32 @@
 import type { Section } from '@/stores/portfolio-store';
 
 export const rooftops = {
-  projects: [-5.4, 3, -2.5], about: [5.2, 2.2, -3],
-  socials: [-5, -0.2, 5], leads: [5.5, -0.7, 4.5],
+  projects: [-7.6, 3.4, -4.2], about: [7.4, 2.6, -4.2],
+  socials: [-7.2, 0.2, 6], leads: [7.2, -0.4, 6],
+} as const;
+
+export const roofDimensions = {
+  projects: { width: 13.2, depth: 8.2 },
+  about: { width: 11.8, depth: 8.2 },
+  socials: { width: 11.8, depth: 7.8 },
+  leads: { width: 11.8, depth: 7.8 },
 } as const;
 
 type Shot = { position: [number, number, number]; target: [number, number, number]; fov: number };
-// Close-up cameras sit above the front railing, not behind the neighboring roof.
-// Each shot centers the physical wall and leaves floor space and skyline in frame.
+// Near-eye-level reading shots keep lettering almost frontal while retaining the roof.
 export const cameraPositions: Record<Section, Shot> = {
-  overview: { position: [19, 18, 30], target: [0, 1.5, 0], fov: 43 },
-  projects: { position: [-4.5, 8.6, 6.4], target: [-5.4, 4.9, -3.0], fov: 43 },
-  about: { position: [6.0, 7.6, 5.0], target: [5.2, 4.0, -3.6], fov: 43 },
-  socials: { position: [-3.9, 5.1, 13.0], target: [-5, 1.6, 4.4], fov: 43 },
-  leads: { position: [6.1, 4.8, 12.5], target: [5.5, 1.1, 3.9], fov: 43 },
+  overview: { position: [25, 24, 42], target: [0, -6, 0], fov: 46 },
+  projects: { position: [-7.4, 8.7, 8.8], target: [-7.6, 6.6, -6.2], fov: 34 },
+  about: { position: [7.6, 7.9, 8.8], target: [7.4, 5.8, -6.2], fov: 34 },
+  socials: { position: [-7, 5.5, 19], target: [-7.2, 3.4, 4], fov: 34 },
+  leads: { position: [7.4, 4.9, 19], target: [7.2, 2.8, 4], fov: 34 },
 };
 
-// Portrait shots look almost straight onto the display. The roofs remain visible
-// below the boards; no viewport-sized content layer is needed on small screens.
+// Portrait fixtures grow vertically; CameraController fits their physical bounds.
 export const mobileCameraPositions: Record<Section, Shot> = {
-  overview: { position: [28.5, 26.25, 45], target: [0, 1.5, 0], fov: 43 },
-  projects: { position: [-5.1, 7.7, 1.8], target: [-5.4, 5.4, -3.2], fov: 105 },
-  about: { position: [5.5, 6.7, 1.3], target: [5.2, 4.6, -3.7], fov: 105 },
-  socials: { position: [-4.7, 4.3, 9.5], target: [-5, 2.2, 4.3], fov: 105 },
-  leads: { position: [5.8, 3.8, 9.0], target: [5.5, 1.7, 3.8], fov: 105 },
+  overview: { position: [35, 33, 57], target: [0, -6, 0], fov: 47 },
+  projects: { position: [-7.6, 8.9, 6.8], target: [-7.6, 8, -6.2], fov: 50 },
+  about: { position: [7.4, 8.1, 6.8], target: [7.4, 7.2, -6.2], fov: 50 },
+  socials: { position: [-7.2, 5.7, 17], target: [-7.2, 4.8, 4], fov: 50 },
+  leads: { position: [7.2, 5.1, 17], target: [7.2, 4.2, 4], fov: 50 },
 };
