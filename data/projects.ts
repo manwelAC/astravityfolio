@@ -13,7 +13,7 @@ export const projects: Project[] = [
     "year": "",
     "status": "",
     "featured": false,
-    "cover": "/assets/projects/balitaan/foryou-page.webp",
+    "cover": "/assets/projects/balitaan/login.webp",
     "gallery": [
       "/assets/projects/balitaan/foryou-page.webp",
       "/assets/projects/balitaan/login.webp",
@@ -56,7 +56,7 @@ export const projects: Project[] = [
     "year": "",
     "status": "",
     "featured": false,
-    "cover": "/assets/projects/delibites/disciplinary-action.webp",
+    "cover": "/assets/projects/delibites/login.webp",
     "gallery": [
       "/assets/projects/delibites/disciplinary-action.webp",
       "/assets/projects/delibites/incident-report.webp",
@@ -121,7 +121,7 @@ export const projects: Project[] = [
     "year": "",
     "status": "",
     "featured": false,
-    "cover": "/assets/projects/imajica/dashboard.webp",
+    "cover": "/assets/projects/imajica/login.webp",
     "gallery": [
       "/assets/projects/imajica/Best-selling-treatment-reports.webp",
       "/assets/projects/imajica/client-scheduling.webp",
@@ -158,7 +158,7 @@ export const projects: Project[] = [
     "year": "",
     "status": "",
     "featured": false,
-    "cover": "/assets/projects/injap/conversations.webp",
+    "cover": "/assets/projects/injap/login.webp",
     "gallery": [
       "/assets/projects/injap/conversations.webp",
       "/assets/projects/injap/inco-wallet.webp",
@@ -182,7 +182,7 @@ export const projects: Project[] = [
     "year": "",
     "status": "",
     "featured": false,
-    "cover": "/assets/projects/shinryo/att-logs-upload.webp",
+    "cover": "/assets/projects/shinryo/login.webp",
     "gallery": [
       "/assets/projects/shinryo/att-logs-upload.webp",
       "/assets/projects/shinryo/DTR-management.webp",

@@ -5,7 +5,7 @@
   --amber:#f5bc76;
   --ink:#201f2a;
   --line:#ffffff20;
-  --font-pixel:"Lucida Console","Cascadia Mono",monospace;
+  --font-pixel:var(--font-silkscreen),"Lucida Console","Cascadia Mono",monospace;
   --font-copy:Verdana,Arial,sans-serif;
   color-scheme:dark
 }
@@ -111,26 +111,7 @@ button:hover,a:hover {
   margin-top:6px;
   color:#d1bcc6
 }
-.top-right {
-  font-family:var(--font-pixel);
-  font-size:9px;
-  letter-spacing:1.4px;
-  display:flex;
-  align-items:center;
-  gap:9px
-}
-.status-dot {
-  width:5px;
-  height:5px;
-  background:#c2c995;
-  box-shadow:0 0 10px #c2c977
-}
-.edition {
-  border-left:1px solid #ffffff30;
-  margin-left:15px;
-  padding-left:24px;
-  color:#c3b0bf
-}
+
 .intro {
   position:absolute;
   left:44px;
@@ -153,13 +134,13 @@ button:hover,a:hover {
 }
 .eyebrow:before { content:""; width:5px; height:5px; margin-right:8px; background:var(--amber); box-shadow:7px 0 0 #b5795f; }
 .intro h1 {
-  max-width:560px;
-  font:900 clamp(29px,3.25vw,52px)/1.05 var(--font-pixel);
+  max-width:620px;
+  font:700 clamp(24px,2.7vw,40px)/1.22 var(--font-pixel);
   text-transform:uppercase;
-  letter-spacing:-3px;
+  letter-spacing:1px;
   margin:17px 0 18px;
   color:#fff1d6;
-  text-shadow:3px 0 0 #fff1d6,-3px 0 0 #fff1d6,0 3px 0 #fff1d6,3px 3px 0 #5b4057,6px 6px 0 #2a283c,0 0 24px #f2b48635
+  text-shadow:2px 2px 0 #3b2a3f,4px 4px 0 #1e1929,0 0 20px #f5bc762b;
 }
 .intro h1>span {
   color:var(--amber)
@@ -178,21 +159,7 @@ button:hover,a:hover {
   padding:0 8px;
   color:var(--amber)
 }
-.world-caption {
-  position:absolute;
-  right:42px;
-  bottom:126px;
-  font:700 8px var(--font-pixel);
-  letter-spacing:1.5px;
-  display:flex;
-  flex-direction:column;
-  gap:9px;
-  text-align:right;
-  color:#f3d9cf
-}
-.coordinate {
-  color:#dbc3cf
-}
+
 .bottom-bar {
   position:absolute;
   bottom:0;
@@ -779,7 +746,7 @@ form small {
     top:140px
   }
   .intro h1 {
-    font-size:49px
+    font-size:36px
   }
 }
 @media(max-width:1150px) {
@@ -800,10 +767,7 @@ form small {
     width:430px
   }
   .intro h1 {
-    font-size:33px
-  }
-  .top-right .edition {
-    display:none
+    font-size:26px
   }
 }
 @media(max-width:700px) {
@@ -824,21 +788,15 @@ form small {
   .brand>svg {
     width:23px
   }
-  .top-right {
-    font-size:0;
-    gap:0
-  }
-  .status-dot {
-    width:6px;
-    height:6px
-  }
   .intro {
     top:102px;
     left:24px
   }
   .intro h1 {
-    font-size:30px;
-    margin-top:11px
+    font-size:19px;
+    line-height:1.25;
+    margin-top:11px;
+    letter-spacing:0.5px
   }
   .intro .eyebrow {
     font-size:7px;
@@ -849,11 +807,7 @@ form small {
     max-width:230px;
     line-height:1.8
   }
-  .world-caption {
-    bottom:110px;
-    right:23px;
-    font-size:6px
-  }
+
   .bottom-bar {
     padding:17px 10px 22px
   }
@@ -1206,4 +1160,115 @@ form small {
 @media(prefers-reduced-motion:reduce) {
  .about-presentation .archive-page,.about-presentation .archive-page>div>* { animation:none; }
  .about-presentation .archive-tab-btn,.about-presentation .stack-card { transition:none; }
+}
+
+/* -------------------------------------------------------------
+   Rooftop Lounge & Character Social Scene Styles
+------------------------------------------------------------- */
+.lounge-marquee-sign {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 14px;
+  user-select: none;
+}
+.marquee-top {
+  font: 700 9px var(--font-pixel);
+  letter-spacing: 2px;
+  color: #f5bc76;
+  opacity: 0.85;
+  margin-bottom: 2px;
+}
+.marquee-title {
+  font: 700 21px/1.1 var(--font-pixel);
+  letter-spacing: 2px;
+  color: #fff2d8;
+  text-shadow: 0 0 14px #ff9e4299, 2px 2px 0 #321c17;
+}
+.marquee-sub {
+  font: 700 8px var(--font-pixel);
+  letter-spacing: 1.5px;
+  color: #e5cdbe;
+  margin-top: 3px;
+}
+
+/* Floating Speech Bubbles */
+.lounge-speech-bubble {
+  position: relative;
+  background: rgba(26, 22, 33, 0.94);
+  backdrop-filter: blur(8px);
+  border: 2px solid #f5bc76;
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 220px;
+  max-width: 290px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 12px #f5bc7633;
+  cursor: pointer;
+  user-select: none;
+  animation: speech-pop 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+.lounge-speech-bubble:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: #ffd89e;
+}
+.speaker-manuel {
+  border-left: 4px solid #5bd1b9;
+}
+.speaker-guest {
+  border-left: 4px solid #f28b66;
+}
+.bubble-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 9px var(--font-pixel);
+  letter-spacing: 1px;
+  color: #f5bc76;
+  margin-bottom: 5px;
+}
+.speaker-manuel .speaker-indicator {
+  color: #5bd1b9;
+}
+.speaker-guest .speaker-indicator {
+  color: #f28b66;
+}
+.speaker-name {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.bubble-hint {
+  margin-left: auto;
+  font-size: 7.5px;
+  opacity: 0.6;
+  color: #cfc2cb;
+}
+.bubble-text {
+  margin: 0;
+  font-family: var(--font-copy);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #fdf5ec;
+  font-weight: 500;
+}
+.bubble-tail {
+  position: absolute;
+  bottom: -9px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 9px solid #f5bc76;
+}
+.tail-left {
+  left: 28px;
+}
+.tail-right {
+  right: 28px;
+}
+@keyframes speech-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }

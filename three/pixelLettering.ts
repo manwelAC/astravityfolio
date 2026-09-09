@@ -13,6 +13,7 @@ const glyphs: Record<string, string> = {
  U:'10001/10001/10001/10001/10001/10001/01110', V:'10001/10001/10001/10001/10001/01010/00100',
  W:'10001/10001/10001/10101/10101/10101/01010', X:'10001/10001/01010/00100/01010/10001/10001',
  Y:'10001/10001/01010/00100/00100/00100/00100', Z:'11111/00001/00010/00100/01000/10000/11111',
+ "'":'00100/00100/01000/00000/00000/00000/00000',
 };
 export function pixelLettering(ctx: CanvasRenderingContext2D, text: string, width: number, top: number, maxHeight: number) {
  const scale = Math.max(1, Math.floor(Math.min((width - 32) / (text.length * 6 - 1), maxHeight / 7)));

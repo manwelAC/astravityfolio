@@ -1,4 +1,4 @@
-# Indie Block
+# Manuel's Roofies
 
 A procedural rooftop portfolio for John Manuel Cuerdo / manuelAC, built with Next.js, React Three Fiber, Three.js, GSAP, and Zustand. No external models or fonts are required.
 
@@ -58,6 +58,6 @@ The selected rooftop is the content surface. Primary 3D views do not open viewpo
 
 `components/world/WorldDisplay.tsx` handles the physical bezel and Drei `Html transform` surface. Desktop and portrait camera position, target, and FOV live in `three/cameraPositions.ts`. Portrait boards expand within the rooftop; long content scrolls inside the screen. The explicit Read without 3D accessibility mode retains the simplified HTML views.
 
-Drag the city to orbit its camera. Overview permits a full horizontal rotation; selected rooftops limit rotation to keep their front-facing displays usable. Reset view returns to the designed composition, and Back to Indie Block restores the overview. Camera travel temporarily disables orbit input. Reduced-motion preferences remove travel and cloud drift.
+Drag the city to orbit its camera. Overview permits a full horizontal rotation; selected rooftops limit rotation to keep their front-facing displays usable. Reset view returns to the designed composition, and Back to Manuel's Roofies restores the overview. Camera travel temporarily disables orbit input. Reduced-motion preferences remove travel and cloud drift.
 
 `components/world/PixelCloudBank.tsx` creates thick, stepped cloud masses from voxelized overlapping ellipsoids using a single instanced batch and lower mobile density.

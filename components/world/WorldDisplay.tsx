@@ -1,36 +1,25 @@
 'use client';
-import { ReactNode, useEffect, useRef } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import { Html } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
-import { Group } from 'three';
-import gsap from 'gsap';
+import { Section, usePortfolio } from '@/stores/portfolio-store';
+
+export const DisplayRoofContext = createContext<Section>('overview');
 
 /** A real cabinet, bezel and feet with DOM mapped to its glass surface.
  * 400 CSS pixels at distanceFactor=1 occupy one world unit.
  * This never uses fullscreen, sprite, or viewport positioning. */
-export default function WorldDisplay({ children, position, width, height, pixels = 900, label, tone = 'archive', animateKey = '', hoverLift = false, presentation = false, surface = 'cabinet' }: {
+export default function WorldDisplay({ children, position, width, height, pixels = 900, label, tone = 'archive', presentation = false, surface = 'cabinet' }: {
   children: ReactNode; position: [number, number, number]; width: number; height: number;
-  pixels?: number; label: string; tone?: 'archive' | 'terminal' | 'gallery'; animateKey?: string; hoverLift?: boolean; presentation?: boolean; surface?: 'cabinet' | 'plaque';
+  pixels?: number; label: string; tone?: 'archive' | 'terminal' | 'gallery'; presentation?: boolean; surface?: 'cabinet' | 'plaque';
 }) {
-  const cabinet = useRef<Group>(null);
   const compact = useThree(state => state.size.width < 700);
-  const z = position[2];
-  useEffect(() => {
-    if (!cabinet.current || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const group = cabinet.current;
-    const timeline = gsap.timeline();
-    timeline.fromTo(group.position, { z: z - (presentation ? .9 : .24) }, { z, duration: presentation ? .75 : .38, ease: 'power3.out' }, 0);
-    if (presentation) {
-      timeline.fromTo(group.scale, { x: .94, y: .82, z: 1 }, { x: 1, y: 1, z: 1, duration: .7, ease: 'back.out(1.15)' }, 0);
-      timeline.fromTo(group.rotation, { x: -.045 }, { x: 0, duration: .7, ease: 'power3.out' }, 0);
-    }
-    return () => { timeline.kill(); group.scale.set(1, 1, 1); group.rotation.x = 0; };
-  }, [animateKey, z, presentation]);
+  const roof = useContext(DisplayRoofContext);
+  const interactive = usePortfolio(state => state.section === roof && !state.transitioning);
   const pixelHeight = pixels * height / width;
   const architectural = height > 1 && surface === 'cabinet';
   const stone = tone === 'terminal' ? '#7d8471' : '#b08263';
-  const hover = (active: boolean) => { if (hoverLift && cabinet.current) gsap.to(cabinet.current.position, { z: z + (active ? .12 : 0), duration: .2, overwrite: true }); };
-  return <group ref={cabinet} position={position}>
+  return <group position={position} onClick={e => { if (!interactive && !usePortfolio.getState().transitioning) { e.stopPropagation(); usePortfolio.getState().navigate(roof); } }}>
     {architectural && <group>
       {/* Coursed piers and projecting cornices use the rooftop's block language. */}
       {[-1, 1].map(side => <group key={side}>
@@ -58,14 +47,11 @@ export default function WorldDisplay({ children, position, width, height, pixels
       </group>)}
     </group>}
     {[-1, 1].map(side => <mesh key={side} position={[side * (width / 2 + .09), height / 2 + .085, .02]}><boxGeometry args={[.06, .06, .06]} /><meshBasicMaterial color="#ffc782" /></mesh>)}
-    <Html transform position={[0, 0, .06]} distanceFactor={width * 400 / pixels} zIndexRange={[100, 10]} pointerEvents="auto">
+    <Html transform occlude="blending" geometry={<planeGeometry args={[width, height]} />} position={[0, 0, .06]} distanceFactor={width * 400 / pixels} zIndexRange={[100, 10]} pointerEvents={interactive ? 'auto' : 'none'}>
       <section
+        inert={!interactive}
         onPointerDown={e => e.stopPropagation()}
         onClick={e => e.stopPropagation()}
-        onMouseEnter={() => hover(true)}
-        onMouseLeave={() => hover(false)}
-        onFocusCapture={() => hover(true)}
-        onBlurCapture={() => hover(false)}
         className={`world-display ${tone} ${compact ? 'compact-display' : ''} ${presentation ? 'about-presentation' : ''} surface-${surface}`}
         aria-label={label}
         style={{ width: pixels, height: pixelHeight }}

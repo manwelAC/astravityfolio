@@ -4,7 +4,7 @@ import { useThree } from '@react-three/fiber';
 import { profile, journey } from '@/data/profile';
 import WorldDisplay from './WorldDisplay';
 
-const chapters = ['The builder', 'The tools', 'The degree', 'The journey'] as const;
+const chapters = ['Builder', 'Tools', 'Degree', 'Journey'] as const;
 const shelves = Object.entries(profile.stack);
 
 export default function AboutRooftop() {
@@ -17,13 +17,13 @@ export default function AboutRooftop() {
   const pixels = compact ? 360 : 760;
   return <>
     {/* Separate fixtures leave real air, wall and supports between the stories. */}
-    {[-1, 1].map(side => <mesh key={side} position={[side * (width / 2 - .2), compact ? 3.7 : 2.65, -2.7]} castShadow>
-      <boxGeometry args={[.16, compact ? 7.5 : 5.4, .2]} /><meshStandardMaterial color="#513b32" roughness={1} />
+    {[-1, 1].map(side => <mesh key={side} position={[side * (width / 2 - .2), compact ? 3.7 : 1.6, -3.45]} castShadow>
+      <boxGeometry args={[.16, compact ? 7.5 : 3.2, .2]} /><meshStandardMaterial color="#513b32" roughness={1} />
     </mesh>)}
-    <WorldDisplay position={[0, compact ? 7.1 : 5.15, -2.3]} width={width} height={compact ? 1 : .95} pixels={pixels} label="John Manuel's workshop nameplate" surface="plaque">
+    <WorldDisplay position={[compact ? 0 : -3.8, compact ? 7.1 : 2.65, -3.15]} width={compact ? width : 2.6} height={compact ? 1 : 1} pixels={compact ? pixels : 210} label="John Manuel's workshop nameplate" surface="plaque">
       <header className="workshop-name"><span className="workshop-monogram" aria-hidden="true">JM</span><div><span>THE PERSON BEHIND THE BLOCK</span><h2>John Manuel Cuerdo</h2></div></header>
     </WorldDisplay>
-    <WorldDisplay position={[0, compact ? 3.65 : 2.55, -2.15]} width={width} height={compact ? 5.45 : 3.95} pixels={pixels} label="About workshop story" surface="plaque">
+    <WorldDisplay position={[compact ? 0 : 1.5, compact ? 3.65 : 1.9, -3.15]} width={compact ? width : 7.4} height={compact ? 5.45 : 2.65} pixels={compact ? pixels : 580} label="About workshop story" surface="plaque">
       <article className={`workshop-story chapter-${chapter}`} key={chapter}>
         <span className="story-number" aria-hidden="true">0{chapter + 1}</span>
         {chapter === 0 && <>
@@ -54,8 +54,8 @@ export default function AboutRooftop() {
         </>}
       </article>
     </WorldDisplay>
-    <group position={[0, compact ? .35 : .15, -1.9]}>
-      {chapters.map((name, i) => <WorldDisplay key={name} position={[(i - 1.5) * (width / 4 + .06), 0, chapter === i ? .12 : 0]} width={width / 4 - .09} height={compact ? .7 : .65} pixels={compact ? 88 : 175} label={name} surface="plaque">
+    <group position={[0, compact ? .35 : 0, -3.15]}>
+      {chapters.map((name, i) => <WorldDisplay key={name} position={[compact ? (i - 1.5) * (width / 4 + .06) : -3.8, compact ? 0 : 1.85 - i * .43, 0]} width={compact ? width / 4 - .09 : 2.6} height={compact ? .7 : .34} pixels={compact ? 88 : 210} label={name} surface="plaque">
         <button className="chapter-marker" aria-pressed={chapter === i} onClick={() => setChapter(i)}><span>0{i + 1}</span>{name}</button>
       </WorldDisplay>)}
     </group>

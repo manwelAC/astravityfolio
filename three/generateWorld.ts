@@ -120,35 +120,18 @@ export function generateWorld(low: boolean) {
             crate(x + side * (w / 2 - 1), y + .1, z + 2.5);
         }
         crate(x + w / 2 - 1, y, z + 1.1);
-        desk(x + 1.3, y, z - .3);
+        if (id !== 'socials' && id !== 'leads') {
+            desk(x + 1.3, y, z - .3);
+        }
         if (id === 'about') {
             // A furnished reading corner, kept away from the central display.
-            for (const shelf of [.7, 1.4, 2.1]) {
-                add([x - 4.6, y + shelf, z - 1.1], [1.5, .12, .62], '#805536');
-                for (let book = 0; book < 5; book++)
-                    add([x - 5.15 + book * .26, y + shelf + .27, z - 1.1], [.18, .42, .36], ['#827c58', '#b28358', '#655e79'][book % 3]);
-            }
-            for (const edge of [-.85, .85]) add([x - 4.6 + edge, y + 1.2, z - 1.1], [.13, 2.4, .65], '#4e382d');
+
             add([x - 1.6, y + .5, z + .2], [2.1, .45, .85], '#c4a083');
             add([x - 1.6, y + .94, z - .14], [2.1, .65, .24], '#c4a083');
             for (const dx of [-2.65, -.55])
                 add([x + dx, y + .66, z + .15], [.22, .65, .95], '#a77f68');
             add([x - 1.5, y + .32, z + 1.3], [3.8, .04, 2], '#475561');
             for (let tile = -3; tile <= 3; tile++) add([x - 1.5 + tile * .45, y + .35, z + 1.3], [.23, .02, 1.6], '#b3946b');
-            for (let i = 0; i < 9; i++)
-                add([x - 2.5 + i * .23, y + 1.05, z - 1.95], [.16, .4 + rand() * .3, .3], ['#a77750', '#777e64', '#977a80'][i % 3]);
-        }
-        if (id === 'leads') {
-            add([x - 2, y + .8, z + .3], [.8, 1.5, .65], '#a94f47');
-            add([x - 2, y + 1.08, z + .64], [.54, .12, .02], '#2f2831');
-            glow([x - 2, y + 1.48, z + .3], [.65, .08, .5], '#e8ac77');
-        }
-        if (id === 'socials') {
-            add([x - w / 2 + .5, y + 2.5, z - 1.8], [.15, 5, .15], '#302b38');
-            for (let h = 2; h < 5; h += .7)
-                add([x - w / 2 + .5, y + h, z - 1.8], [1, .08, .08], '#37323d');
-            glow([x - w / 2 + .5, y + 5, z - 1.8], [.22, .24, .22], '#f27762');
-            add([x - 1.4, y + .6, z], [.3, 1.2, .3], '#736776');
         }
     });
     // Walkways climb between roofs in broad, physical steps.

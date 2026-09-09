@@ -113,3 +113,60 @@
 .world-display.terminal:not(.compact-display) .terminal-content > form { grid-column: 2; grid-row: 1 / 4; border-left: 2px dashed #b89970; padding-left: 20px; margin: 0; }
 .world-display.terminal:not(.compact-display) .email-link { grid-column: 1; grid-row: 3; flex-wrap: wrap; align-self: end; }
 .world-display.terminal:not(.compact-display) .email-link span { overflow-wrap: anywhere; }
+/* Project selection stays inside the original three equal wall openings. */
+.world-display .fixed-project-window { height: 100%; display: flex; flex-direction: column; background: #28242a; color: #f7d49d; }
+.project-window-preview { display: block; flex: 1; min-height: 0; width: 100%; padding: 0; border: 0; background: #171c1e; }
+.project-window-preview img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.project-window-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-top: 2px solid #94724c; background: #382c25; }
+.project-window-label button { padding: 0; background: none; border: 0; text-align: left; color: #ffe0a6; font: 700 19px/1.2 var(--font-pixel); text-transform: uppercase; }
+.project-window-label a { color: #ead0aa; font: 12px var(--font-copy); white-space: nowrap; }
+.project-window-pages { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 31px; padding: 2px 8px; background: #382c25; color: #e3c291; font: 13px var(--font-copy); }
+.project-window-pages button { padding: 2px 12px; background: #55412e; color: #ffe0a6; border: 1px solid #89683f; }
+.project-window-pages a { color: #ffe0a6; }
+.fixed-project-window.is-selected .project-window-label { border-top-color: #ffdc91; }
+.project-wall-browse { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 2px 12px; background: #322921; color: #f2d4a0; font: 17px var(--font-pixel); }
+.project-wall-browse button { background: none; border: 0; color: inherit; padding: 3px 10px; }
+.project-wall-browse button:hover, .project-window-pages button:hover { color: #fff7dc; background: #705331; }
+.compact-display .project-window-label { padding: 12px; }
+.compact-display .project-window-label button { font-size: 23px; }
+.compact-display .project-window-label a { font-size: 14px; }
+.compact-display .project-window-pages { min-height: 44px; font-size: 15px; }
+.compact-display .project-window-pages button { min-width: 44px; min-height: 40px; }
+.compact-display .project-wall-browse { font-size: 14px; padding: 2px; }
+.compact-display .project-wall-browse button { min-height: 40px; padding: 4px 10px; }
+/* Fixed wall fixtures keep reading surfaces behind the rooftop furniture. */
+.world { isolation: isolate; }
+.world-display:not(.compact-display) .workshop-name { flex-direction: column; align-items: flex-start; gap: 5px; padding: 8px 10px; }
+.world-display:not(.compact-display) .workshop-name .workshop-monogram { display: none; }
+.world-display:not(.compact-display) .workshop-name h2 { font-size: 22px; }
+.world-display:not(.compact-display) .workshop-name div > span { font-size: 9px; letter-spacing: 0; }
+.world-display:not(.compact-display) .workshop-story { padding: 12px 17px; }
+.world-display:not(.compact-display) .workshop-story h2 { font-size: 25px; margin: 5px 0; }
+.world-display:not(.compact-display) .workshop-story p { font-size: 16px; line-height: 1.4; }
+.world-display:not(.compact-display) .story-eyebrow { font-size: 10px; }
+.world-display:not(.compact-display) .story-number { font-size: 30px; }
+.world-display:not(.compact-display) .story-footnote { font-size: 12px; padding-top: 5px; }
+.world-display:not(.compact-display) .story-organization { font-size: 16px; }
+.world-display:not(.compact-display) .story-pager { font-size: 12px; padding-top: 5px; }
+.world-display:not(.compact-display) .workshop-tools { gap: 6px; padding: 8px 0; }
+.world-display:not(.compact-display) .workshop-tools > span { font-size: 16px; padding: 5px 9px; }
+.world-display:not(.compact-display) .chapter-marker { font-size: 14px; }
+.world-display.terminal:not(.compact-display) .terminal-bar { height: 23px; padding: 3px 12px; font-size: 10px; }
+.world-display.terminal:not(.compact-display) .terminal-content { height: calc(100% - 23px); padding: 8px 15px; grid-template-columns: .34fr .66fr; gap: 10px; }
+.world-display.terminal:not(.compact-display) h3 { font-size: 22px; }
+.world-display.terminal:not(.compact-display) p { font-size: 13px; }
+.world-display.terminal:not(.compact-display) .terminal-content > form { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; padding-left: 10px; }
+.world-display.terminal:not(.compact-display) .form-row { grid-column: 1; grid-row: 1 / 3; display: grid; gap: 0; }
+.world-display.terminal:not(.compact-display) form > label:not(.honeypot) { grid-column: 2; }
+.world-display.terminal:not(.compact-display) label { font-size: 12px; margin: 0; }
+.world-display.terminal:not(.compact-display) :is(input, select, textarea) { font-size: 14px; padding: 4px; }
+.world-display.terminal:not(.compact-display) textarea { min-height: 46px; height: 46px; }
+.world-display.terminal:not(.compact-display) .primary { grid-column: 1 / -1; font-size: 14px; padding: 5px; }
+.world-display.terminal:not(.compact-display) .email-link, .world-display.terminal:not(.compact-display) .email-link span { font-size: 12px; }
+.world-display:not(.compact-display) .signal-app-icon { width: 48px; height: 48px; margin: 10px 0; }
+.world-display:not(.compact-display) .signal-tile { padding: 8px; }
+.world-display:not(.compact-display) .signal-tile h2 { font-size: 22px; margin: 2px 0; }
+.world-display:not(.compact-display) .signal-tile p { font-size: 16px; margin: 4px 0 8px; }
+.world-display:not(.compact-display) .signal-link { font-size: 13px; padding-top: 5px; }
+.world-display:not(.compact-display) .signal-led { font-size: 10px; }
+.world-display:not(.compact-display) .workshop-name h2 { font-size: 16px; line-height: 1.2; }

@@ -60,7 +60,7 @@ export function Sign({ text, subtitle = '', width = 6, height = 1.9, position, o
         x.fillStyle = '#211c22'; x.fillRect(0, 0, c.width, c.height);
         x.strokeStyle = '#977353'; x.lineWidth = 2; x.strokeRect(5, 5, c.width - 10, c.height - 10);
         x.fillStyle = '#ffe3a4'; x.shadowColor = '#ff8a28'; x.shadowBlur = 8;
-        if (/^[A-Z ]+$/.test(text)) {
+        if (/^[A-Z ']+$/.test(text)) {
             pixelLettering(x, text, c.width, Math.round(c.height * .16), c.height * (subtitle ? .52 : .65));
         } else {
             x.textAlign = 'center'; x.textBaseline = 'middle';

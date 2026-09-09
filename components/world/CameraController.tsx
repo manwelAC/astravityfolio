@@ -8,7 +8,7 @@ import { usePortfolio } from '@/stores/portfolio-store';
 import { cameraPositions, mobileCameraPositions } from '@/three/cameraPositions';
 
 export default function CameraController() {
-  const { camera, size } = useThree();
+  const { camera, size, events } = useThree();
   const section = usePortfolio(s => s.section);
   const transitioning = usePortfolio(s => s.transitioning);
   const revision = usePortfolio(s => s.viewRevision);
@@ -38,7 +38,7 @@ export default function CameraController() {
     timeline.to(perspective, { fov: fittedFov, duration, ease: 'power2.inOut' }, 0);
     return () => { timeline.kill(); };
   }, [camera, section, size.width, size.height, revision]);
-  return <OrbitControls ref={orbit} makeDefault enabled={!transitioning} enablePan={false} enableZoom={false}
+  return <OrbitControls domElement={events.connected as HTMLElement} ref={orbit} makeDefault enabled={!transitioning} enablePan={false} enableZoom={false}
     enableDamping={false} rotateSpeed={.48} minPolarAngle={.55} maxPolarAngle={1.55}
     minAzimuthAngle={section === 'overview' || transitioning ? -Infinity : -.42}
     maxAzimuthAngle={section === 'overview' || transitioning ? Infinity : .42} />;
