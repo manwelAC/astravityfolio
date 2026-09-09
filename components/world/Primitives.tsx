@@ -75,10 +75,33 @@ export function Sign({ text, subtitle = '', width = 6, height = 1.9, position, o
         const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearMipmapLinearFilter;
         t.colorSpace = THREE.SRGBColorSpace; return t;
     }, [text, subtitle, width, height]);
-    useLayoutEffect(() => () => texture.dispose(), [texture]);
-    return <group position={position} scale={hovered ? 1.025 : 1}><mesh position={[0, 0, -0.16]} castShadow><boxGeometry args={[width + .14, height + .14, .22]}/><meshStandardMaterial color="#251f27"/></mesh><mesh onClick={e => { e.stopPropagation(); onClick?.(); }} onPointerOver={e => { if (onClick) {
-        e.stopPropagation();
-        setHovered(true);
-        document.body.style.cursor = 'pointer';
-    } }} onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto'; }}><planeGeometry args={[width, height]}/><meshBasicMaterial map={texture} toneMapped={false}/></mesh></group>;
+    return (
+        <group position={position} scale={hovered ? 1.025 : 1}>
+            <mesh position={[0, 0, -0.08]} castShadow>
+                <boxGeometry args={[width + 0.16, height + 0.16, 0.16]} />
+                <meshStandardMaterial color="#211c22" roughness={0.9} />
+            </mesh>
+            <mesh
+                position={[0, 0, 0.005]}
+                onClick={e => {
+                    e.stopPropagation();
+                    onClick?.();
+                }}
+                onPointerOver={e => {
+                    if (onClick) {
+                        e.stopPropagation();
+                        setHovered(true);
+                        document.body.style.cursor = 'pointer';
+                    }
+                }}
+                onPointerOut={() => {
+                    setHovered(false);
+                    document.body.style.cursor = 'auto';
+                }}
+            >
+                <planeGeometry args={[width, height]} />
+                <meshBasicMaterial map={texture} side={THREE.FrontSide} toneMapped={false} />
+            </mesh>
+        </group>
+    );
 }

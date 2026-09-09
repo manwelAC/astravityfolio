@@ -1,7 +1,8 @@
 'use client';
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo, useRef, useState } from 'react';
 import { Html } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
 import { Section, usePortfolio } from '@/stores/portfolio-store';
 
 export const DisplayRoofContext = createContext<Section>('overview');
@@ -19,7 +20,37 @@ export default function WorldDisplay({ children, position, width, height, pixels
   const pixelHeight = pixels * height / width;
   const architectural = height > 1 && surface === 'cabinet';
   const stone = tone === 'terminal' ? '#7d8471' : '#b08263';
-  return <group position={position} onClick={e => { if (!interactive && !usePortfolio.getState().transitioning) { e.stopPropagation(); usePortfolio.getState().navigate(roof); } }}>
+
+  const groupRef = useRef<THREE.Group>(null!);
+  const [facingFront, setFacingFront] = useState(true);
+
+  const normalLocal = useMemo(() => new THREE.Vector3(0, 0, 1), []);
+  const worldNormal = useMemo(() => new THREE.Vector3(), []);
+  const toCamera = useMemo(() => new THREE.Vector3(), []);
+  const tempPos = useMemo(() => new THREE.Vector3(), []);
+  const tempQuat = useMemo(() => new THREE.Quaternion(), []);
+
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useFrame(({ camera }) => {
+    if (!groupRef.current) return;
+    groupRef.current.getWorldQuaternion(tempQuat);
+    worldNormal.copy(normalLocal).applyQuaternion(tempQuat);
+    groupRef.current.getWorldPosition(tempPos);
+    toCamera.subVectors(camera.position, tempPos);
+    // When camera is behind display plane (normal.dot(toCamera) <= 0.02), hide HTML instantly
+    const isFront = worldNormal.dot(toCamera) > 0.02;
+    if (sectionRef.current) {
+      sectionRef.current.style.visibility = isFront ? 'visible' : 'hidden';
+      sectionRef.current.style.opacity = isFront ? '1' : '0';
+      sectionRef.current.style.display = isFront ? '' : 'none';
+    }
+    if (isFront !== facingFront) {
+      setFacingFront(isFront);
+    }
+  });
+
+  return <group ref={groupRef} position={position} onClick={e => { if (!interactive && !usePortfolio.getState().transitioning) { e.stopPropagation(); usePortfolio.getState().navigate(roof); } }}>
     {architectural && <group>
       {/* Coursed piers and projecting cornices use the rooftop's block language. */}
       {[-1, 1].map(side => <group key={side}>
@@ -37,6 +68,7 @@ export default function WorldDisplay({ children, position, width, height, pixels
     </group>}
     <mesh position={[0, 0, -.19]} castShadow><boxGeometry args={[width + .3, height + .3, .38]} /><meshStandardMaterial color={tone === 'terminal' ? '#67766c' : '#493d38'} roughness={.8} /></mesh>
     <mesh position={[0, 0, .015]}><boxGeometry args={[width + .09, height + .09, .05]} /><meshStandardMaterial color="#141f24" /></mesh>
+    <mesh position={[0, 0, .035]}><boxGeometry args={[width + .02, height + .02, .02]} /><meshStandardMaterial color="#1c2226" roughness={.85} /></mesh>
     {presentation && <group>
       {[-1, 1].map(side => <group key={side}>
         <mesh position={[0, side * (height / 2 + .12), .025]}><boxGeometry args={[width + .35, .09, .14]}/><meshStandardMaterial color="#bd9260" metalness={.55} roughness={.38}/></mesh>
@@ -47,18 +79,21 @@ export default function WorldDisplay({ children, position, width, height, pixels
       </group>)}
     </group>}
     {[-1, 1].map(side => <mesh key={side} position={[side * (width / 2 + .09), height / 2 + .085, .02]}><boxGeometry args={[.06, .06, .06]} /><meshBasicMaterial color="#ffc782" /></mesh>)}
-    <Html transform occlude="blending" geometry={<planeGeometry args={[width, height]} />} position={[0, 0, .06]} distanceFactor={width * 400 / pixels} zIndexRange={[100, 10]} pointerEvents={interactive ? 'auto' : 'none'}>
-      <section
-        inert={!interactive}
-        onPointerDown={e => e.stopPropagation()}
-        onClick={e => e.stopPropagation()}
-        className={`world-display ${tone} ${compact ? 'compact-display' : ''} ${presentation ? 'about-presentation' : ''} surface-${surface}`}
-        aria-label={label}
-        style={{ width: pixels, height: pixelHeight }}
-      >
-        {children}
-      </section>
-    </Html>
+    {facingFront && (
+      <Html transform occlude="blending" geometry={<planeGeometry args={[width, height]} />} position={[0, 0, .06]} distanceFactor={width * 400 / pixels} zIndexRange={[100, 10]} pointerEvents={interactive ? 'auto' : 'none'}>
+        <section
+          ref={sectionRef}
+          inert={!interactive}
+          onPointerDown={e => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
+          className={`world-display ${tone} ${compact ? 'compact-display' : ''} ${presentation ? 'about-presentation' : ''} surface-${surface}`}
+          aria-label={label}
+          style={{ width: pixels, height: pixelHeight }}
+        >
+          {children}
+        </section>
+      </Html>
+    )}
   </group>;
 }
 

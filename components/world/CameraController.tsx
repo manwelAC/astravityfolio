@@ -39,7 +39,7 @@ export default function CameraController() {
     return () => { timeline.kill(); };
   }, [camera, section, size.width, size.height, revision]);
   return <OrbitControls domElement={events.connected as HTMLElement} ref={orbit} makeDefault enabled={!transitioning} enablePan={false} enableZoom={false}
-    enableDamping={false} rotateSpeed={.48} minPolarAngle={.55} maxPolarAngle={1.55}
+    enableDamping={false} rotateSpeed={.48} minPolarAngle={.45} maxPolarAngle={1.5}
     minAzimuthAngle={section === 'overview' || transitioning ? -Infinity : -.42}
     maxAzimuthAngle={section === 'overview' || transitioning ? Infinity : .42} />;
 }

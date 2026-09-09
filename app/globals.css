@@ -903,7 +903,8 @@ form small {
 }
 
 /* World-space surfaces: sizes are physical via Drei Html transform, not viewport panels. */
-.world-display { color: #f4e7cc; background: #202b2c; border: 3px solid #a99770; font: 21px/1.45 var(--font-copy); overflow: hidden; backface-visibility: hidden; }
+.world-display, .world-display * { backface-visibility: hidden !important; -webkit-backface-visibility: hidden !important; }
+.world-display { color: #f4e7cc; background: #202b2c; border: 3px solid #a99770; font: 21px/1.45 var(--font-copy); overflow: hidden; }
 .world-display h1,.world-display h2,.world-display h3,.billboard-project b,.signal-tile h2 { font-family:var(--font-pixel); font-weight:900; text-transform:uppercase; letter-spacing:-.6px; text-shadow:2px 2px 0 #111a1a; }
 .world-display h2 { font-size: 34px; line-height: 1.15; margin: 8px 0 16px; font-weight: 600; letter-spacing: -.6px; }
 .world-display h3 { font-size: 23px; line-height: 1.35; margin: 10px 0; font-weight: 500; }

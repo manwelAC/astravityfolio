@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -48,12 +48,74 @@ const dialogues = [
   }
 ];
 
+function LoungeMarqueeSign({ width = 4.4, height = 0.62 }: { width?: number; height?: number }) {
+  const texture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(width * 128);
+    canvas.height = Math.round(height * 128);
+    const ctx = canvas.getContext('2d')!;
+    ctx.imageSmoothingEnabled = true;
+
+    // Dark neon backing
+    ctx.fillStyle = '#1c1524';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Glowing border
+    ctx.strokeStyle = '#f5bc76';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(6, 6, canvas.width - 12, canvas.height - 12);
+
+    // Inner gold accent line
+    ctx.strokeStyle = '#d48d56';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+
+    // Top kicker
+    ctx.fillStyle = '#f5bc76';
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('ROOFTOP DISTRICT', canvas.width / 2, 27);
+
+    // Main neon title
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ffb366';
+    ctx.shadowBlur = 12;
+    ctx.font = 'bold 30px monospace';
+    ctx.fillText("MANUEL’S LOUNGE", canvas.width / 2, 53);
+
+    // Subtitle
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#eedccf';
+    ctx.font = 'bold 11px monospace';
+    ctx.fillText('● GOOD VIBES & CONVERSATIONS ●', canvas.width / 2, 70);
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }, [width, height]);
+
+  return (
+    <mesh position={[0, 0.95, 0.205]}>
+      <planeGeometry args={[width, height]} />
+      <meshBasicMaterial map={texture} side={THREE.FrontSide} toneMapped={false} />
+    </mesh>
+  );
+}
+
 export default function LeadsRooftop() {
   const compact = useThree(state => state.size.width < 700);
   const activeSection = usePortfolio(s => s.section);
   const isFocused = activeSection === 'leads';
 
   const [dialogueIndex, setDialogueIndex] = useState(0);
+  const [isFacingFront, setIsFacingFront] = useState(true);
+
+  const rootRef = useRef<THREE.Group>(null!);
+  const normalLocal = useMemo(() => new THREE.Vector3(0, 0, 1), []);
+  const worldNormal = useMemo(() => new THREE.Vector3(), []);
+  const toCamera = useMemo(() => new THREE.Vector3(), []);
+  const tempPos = useMemo(() => new THREE.Vector3(), []);
+  const tempQuat = useMemo(() => new THREE.Quaternion(), []);
 
   // Auto-advance dialogue
   useEffect(() => {
@@ -74,7 +136,7 @@ export default function LeadsRooftop() {
   const steamRef = useRef<THREE.Mesh>(null!);
   const fireGlowRef = useRef<THREE.PointLight>(null!);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, camera }) => {
     const t = clock.getElapsedTime();
     if (manuelHeadRef.current) {
       manuelHeadRef.current.rotation.y = 0.26 + Math.sin(t * 0.85) * 0.07;
@@ -91,12 +153,22 @@ export default function LeadsRooftop() {
     if (fireGlowRef.current) {
       fireGlowRef.current.intensity = 2.4 + Math.sin(t * 3.5) * 0.4;
     }
+    if (rootRef.current) {
+      rootRef.current.getWorldQuaternion(tempQuat);
+      worldNormal.copy(normalLocal).applyQuaternion(tempQuat);
+      rootRef.current.getWorldPosition(tempPos);
+      toCamera.subVectors(camera.position, tempPos);
+      const front = worldNormal.dot(toCamera) > 0.05;
+      if (front !== isFacingFront) {
+        setIsFacingFront(front);
+      }
+    }
   });
 
   const currentDialogue = dialogues[dialogueIndex];
 
   return (
-    <group position={[0, 0, 0]}>
+    <group ref={rootRef} position={[0, 0, 0]}>
       {/* Warm Ambient Lights for the Lounge */}
       <pointLight ref={fireGlowRef} position={[0, 1.2, -0.3]} color="#ffad5a" intensity={2.6} distance={7.5} />
       <pointLight position={[-2.5, 3.4, -2.4]} color="#ffe094" intensity={1.8} distance={6} />
@@ -186,13 +258,7 @@ export default function LeadsRooftop() {
           <boxGeometry args={[compact ? 3.3 : 4.3, 0.52, 0.02]} />
           <meshBasicMaterial color="#2a1d2d" />
         </mesh>
-        <Html position={[0, 0.95, 0.22]} transform distanceFactor={compact ? 4.5 : 5.8}>
-          <div className="lounge-marquee-sign">
-            <span className="marquee-top">ROOFTOP DISTRICT</span>
-            <span className="marquee-title">MANUEL’S LOUNGE</span>
-            <span className="marquee-sub">● GOOD VIBES & CONVERSATIONS ●</span>
-          </div>
-        </Html>
+        <LoungeMarqueeSign width={compact ? 3.3 : 4.3} height={0.52} />
       </group>
 
       {/* 4. Side Coffee Station (Right Side) */}
@@ -481,7 +547,7 @@ export default function LeadsRooftop() {
       </group>
 
       {/* 11. DYNAMIC LIVING SPEECH BUBBLES */}
-      {currentDialogue.speaker === 0 && (
+      {isFocused && isFacingFront && currentDialogue.speaker === 0 && (
         <Html
           position={[-1.2, 2.35, -0.7]}
           center
@@ -500,7 +566,7 @@ export default function LeadsRooftop() {
         </Html>
       )}
 
-      {currentDialogue.speaker === 1 && (
+      {isFocused && isFacingFront && currentDialogue.speaker === 1 && (
         <Html
           position={[1.8, 2.3, -0.1]}
           center

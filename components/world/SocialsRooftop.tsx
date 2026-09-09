@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -37,6 +37,14 @@ export default function SocialsRooftop() {
   const isFocused = activeSection === 'socials';
 
   const [dialogueIndex, setDialogueIndex] = useState(0);
+  const [isFacingFront, setIsFacingFront] = useState(true);
+
+  const rootRef = useRef<THREE.Group>(null!);
+  const normalLocal = useMemo(() => new THREE.Vector3(0, 0, 1), []);
+  const worldNormal = useMemo(() => new THREE.Vector3(), []);
+  const toCamera = useMemo(() => new THREE.Vector3(), []);
+  const tempPos = useMemo(() => new THREE.Vector3(), []);
+  const tempQuat = useMemo(() => new THREE.Quaternion(), []);
 
   // Auto-advance dialogue every 4.8s
   useEffect(() => {
@@ -55,7 +63,7 @@ export default function SocialsRooftop() {
   const headRef = useRef<THREE.Group>(null!);
   const armRef = useRef<THREE.Group>(null!);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, camera }) => {
     const t = clock.getElapsedTime();
     if (headRef.current) {
       headRef.current.rotation.y = 0.35 + Math.sin(t * 0.9) * 0.08;
@@ -65,6 +73,16 @@ export default function SocialsRooftop() {
       armRef.current.rotation.z = -0.65 + Math.sin(t * 1.8) * 0.06;
       armRef.current.rotation.y = -0.3 + Math.cos(t * 1.2) * 0.04;
     }
+    if (rootRef.current) {
+      rootRef.current.getWorldQuaternion(tempQuat);
+      worldNormal.copy(normalLocal).applyQuaternion(tempQuat);
+      rootRef.current.getWorldPosition(tempPos);
+      toCamera.subVectors(camera.position, tempPos);
+      const front = worldNormal.dot(toCamera) > 0.05;
+      if (front !== isFacingFront) {
+        setIsFacingFront(front);
+      }
+    }
   });
 
   const currentDialogue = dialogues[dialogueIndex];
@@ -72,7 +90,7 @@ export default function SocialsRooftop() {
   const bubblePos: [number, number, number] = compact ? [-2.2, 2.75, 1.3] : [-3.8, 2.8, 0.8];
 
   return (
-    <group>
+    <group ref={rootRef}>
       {/* 1. WOODEN SCREEN SUPPORT POSTS */}
       {(compact ? [0] : [-3.5, 0, 3.5]).map(x => (
         <mesh key={x} position={[x, compact ? 3.8 : 1.7, -3.3]} castShadow>
@@ -240,7 +258,7 @@ export default function SocialsRooftop() {
       </group>
 
       {/* 4. INTERACTIVE SPEECH BUBBLE ABOVE CHARACTER */}
-      {isFocused && (
+      {isFocused && isFacingFront && (
         <Html
           position={bubblePos}
           center
